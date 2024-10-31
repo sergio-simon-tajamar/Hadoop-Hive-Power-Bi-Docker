@@ -1,0 +1,1 @@
+docker exec -it <nombre_del_contenedor_superset> superset fab create-admin
