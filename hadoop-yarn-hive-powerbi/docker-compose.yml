@@ -14,6 +14,7 @@ services:
       - "50070:50070"
 
   datanode:
+    container_name: datanode
     image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
     volumes:
       - datanode:/hadoop/dfs/data
@@ -24,7 +25,22 @@ services:
     ports:
       - "50075:50075"
 
+  resourcemanager:
+    container_name: resourcemanager
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    restart: always
+    ports:
+      - 8088:8088
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    env_file:
+      ./hadoop-powerbi.env
+    depends_on:
+      - namenode
+      - datanode
+
   hive-server:
+    container_name: hive-server
     image: bde2020/hive:2.3.2-postgresql-metastore
     env_file:
       - ./hadoop-powerbi.env
@@ -47,10 +63,10 @@ services:
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
 
-  presto-coordinator:
-    image: shawnzhu/prestodb:0.181
-    ports:
-      - "8080:8080"
+  # presto-coordinator:
+  #   image: shawnzhu/prestodb:0.181
+  #   # ports:
+  #   #   - "8080:8080"
 
   superset:
     image: apache/superset:latest
@@ -59,7 +75,7 @@ services:
       SUPERSET_LOAD_EXAMPLES: "yes"
       SUPERSET_SECRET_KEY: "thisisaverysecurekey"
     ports:
-      - "8088:8088"
+      - "8080:8080"
     depends_on:
       - hive-server
     entrypoint: >
@@ -67,7 +83,7 @@ services:
       superset db upgrade &&
       superset fab create-admin --username admin --firstname Admin --lastname User --email admin@example.com --password admin123 &&
       superset init &&
-      superset run -h 0.0.0.0 -p 8088
+      superset run -h 0.0.0.0 -p 8080
       "
 
 volumes:

@@ -193,5 +193,3 @@ Para eliminar también los volúmenes de datos:
 ```bash
 docker compose down -v
 ```
-
-Este texto proporciona una guía clara y detallada sobre cada paso y configuración necesarios para iniciar y probar un clúster de Hadoop.

@@ -186,6 +186,8 @@ Para realizar consultas SQL en Hive, sigue estos pasos:
 
 1. Accede al contenedor de Hive:
    ```bash
+   docker-compose exec hive-server bash
+
    /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000
    ```
 
